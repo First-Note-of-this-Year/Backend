@@ -1,4 +1,4 @@
-package com.goormthon.backend.firstsori.global.config;
+package com.goormthon.backend.firstsori.global.config.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,8 +19,9 @@ import java.util.TreeMap;
 @OpenAPIDefinition(
         servers = @Server(url = "https://api.firstsori.site")
 )
+@Profile("prod")
 @Configuration
-public class LocalSwaggerConfig {
+public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
@@ -141,14 +143,14 @@ public class LocalSwaggerConfig {
                 if (response.getContent() != null) {
                     response.getContent().forEach((mediaType, content) -> {
                         // 에러 응답에는 해당하는 ApiResponse 스키마 적용
-                        content.setSchema(new io.swagger.v3.oas.models.media.Schema<>().$ref("#/components/schemas/" + schemaRef));
+                        content.setSchema(new Schema<>().$ref("#/components/schemas/" + schemaRef));
                     });
                 } else {
                     // Content가 없는 경우 새로 생성
                     io.swagger.v3.oas.models.media.Content newContent = new io.swagger.v3.oas.models.media.Content();
                     newContent.addMediaType("application/json", 
                         new io.swagger.v3.oas.models.media.MediaType()
-                            .schema(new io.swagger.v3.oas.models.media.Schema<>().$ref("#/components/schemas/" + schemaRef)));
+                            .schema(new Schema<>().$ref("#/components/schemas/" + schemaRef)));
                     response.setContent(newContent);
                 }
             }
