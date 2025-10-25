@@ -5,15 +5,15 @@ on:
     branches:
       - develop
       - main
-      - 'feat/**'
-      - 'setting/**'
+  pull_request:
+    branches:
+      - develop
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == true
     steps:
-      # Fork PR/feature 브랜치에서도 token 없이 checkout
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -39,14 +39,13 @@ jobs:
       - name: Create .env file from Secrets
         run: |
           echo "${{ secrets.ENV }}" > .env
-      
 
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      # main/develop 브랜치에서만 Docker 빌드 & 허브 push
+      # PR이 아니고, main/develop 브랜치에 push된 경우에만 Docker 빌드 & 푸시
       - name: Build & Push Docker image
-        if: startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main')
+        if: github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/develop') || startsWith(github.ref, 'refs/heads/main'))
         run: |
           IMAGE_NAME=${{ secrets.DOCKER_USER_NAME }}/firstsori-dev
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
