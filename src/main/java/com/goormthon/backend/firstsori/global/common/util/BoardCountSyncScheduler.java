@@ -1,4 +1,4 @@
-package com.goormthon.backend.firstsori.global.common.scheduler;
+package com.goormthon.backend.firstsori.global.common.util;
 
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.board.domain.repository.BoardRepository;
