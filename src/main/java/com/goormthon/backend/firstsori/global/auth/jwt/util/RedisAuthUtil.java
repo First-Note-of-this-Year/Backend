@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class RedisUtil {
+public class RedisAuthUtil {
 
     @Value("${firstsori.jwt.refresh.expiration}")
     private Long refreshTokenExpiration;
