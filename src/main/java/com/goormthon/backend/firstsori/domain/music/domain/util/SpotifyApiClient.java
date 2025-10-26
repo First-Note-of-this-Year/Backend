@@ -1,6 +1,6 @@
-package com.goormthon.backend.firstsori.global.spotify.domain.client;
+package com.goormthon.backend.firstsori.domain.music.domain.util;
 
-import com.goormthon.backend.firstsori.global.spotify.application.dto.response.SpotifySearchApiResponse;
+import com.goormthon.backend.firstsori.domain.music.application.dto.response.SpotifySearchApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
