@@ -1,11 +1,7 @@
 package com.goormthon.backend.firstsori.domain.music.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -13,8 +9,6 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "music")
-@AllArgsConstructor
-@SuperBuilder
 public class Music {
 
     @Id
@@ -34,5 +28,12 @@ public class Music {
     @Column(nullable = true)
     private String albumImageUrl;
 
+    @Builder
+    public Music(String songName, String artist, String albumImageUrl, String songUrl){
+        this.songName = songName;
+        this.artist = artist;
+        this.songUrl = songUrl;
+        this.albumImageUrl = albumImageUrl;
+    }
 
 }
