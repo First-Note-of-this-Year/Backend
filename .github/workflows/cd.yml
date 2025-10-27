@@ -3,13 +3,17 @@ name: CD Pipeline (Dev)
 on:
   workflow_run:
     workflows: ["CI Pipeline (Fork-safe)"]
+    branches:
+      - develop
+      - main
     types:
       - completed
 
 jobs:
   deploy:
+    # CI가 성공했을 때만 배포
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == true
     steps:
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -36,7 +40,7 @@ jobs:
             ${{ secrets.ENV }}
             EOF
             
-            #디렉토리 변경
+            # 디렉토리 변경
             cd /home/ubuntu/2025_SEASONTHON_TEAM_80_BE
 
             echo "===== Docker Hub 로그인 ====="
