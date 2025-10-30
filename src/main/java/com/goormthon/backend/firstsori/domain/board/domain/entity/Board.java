@@ -29,6 +29,7 @@ import java.util.UUID;
      private User user;
 
      @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+     @Builder.Default
      private List<Message> messages = new ArrayList<>();
 
      @Column(name="nickname", nullable = false)
@@ -38,6 +39,7 @@ import java.util.UUID;
      private String shareUri;
 
     @Column(nullable = false)
+    @Builder.Default
     private int messageCount = 0;
 
     public void incrementMessageCount(int redisCount) {
