@@ -4,7 +4,7 @@ import com.goormthon.backend.firstsori.global.auth.jwt.exception.JwtAuthenticati
 import com.goormthon.backend.firstsori.global.auth.jwt.util.CookieUtil;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenExtractor;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenProvider;
-import com.goormthon.backend.firstsori.global.auth.jwt.util.RedisUtil;
+import com.goormthon.backend.firstsori.global.auth.jwt.util.RedisAuthUtil;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class JwtTokenService implements JwtTokenUseCase {
     private final JwtTokenExtractor extractor;
 
     /// 레디스
-    private final RedisUtil redisUtil;
+    private final RedisAuthUtil RedisAuthUtil;
 
     /// 쿠키
     private final CookieUtil cookieUtil;
@@ -52,7 +52,7 @@ public class JwtTokenService implements JwtTokenUseCase {
 
         // 해당 토큰을 레디스에 저장
         UUID userId = principalDetails.getId();
-        redisUtil.saveRefreshToken(userId, refreshToken);
+        RedisAuthUtil.saveRefreshToken(userId, refreshToken);
 
         // 토큰을 쿠키에 저장
         cookieUtil.setRefreshCookie(refreshToken, response);
@@ -78,7 +78,7 @@ public class JwtTokenService implements JwtTokenUseCase {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
         // 유저와 리프레쉬 토큰이 일치하는지 체크한다.
-        boolean checked = redisUtil.checkRefreshTokenAndUserId(refreshToken, principalDetails.getId());
+        boolean checked = RedisAuthUtil.checkRefreshTokenAndUserId(refreshToken, principalDetails.getId());
         if (!checked) {
             throw new JwtAuthenticationException(ErrorCode.INVALID_CREDENTIALS.getMessage());
         }
@@ -96,7 +96,7 @@ public class JwtTokenService implements JwtTokenUseCase {
                 .orElseThrow(() -> new JwtAuthenticationException(ErrorCode.TOKEN_NOT_FOUND_COOKIE.getMessage()));
 
         // 리프레쉬와 유저가 맞는지 체크
-        boolean checked = redisUtil.checkRefreshTokenAndUserId(refreshToken, userId);
+        boolean checked = RedisAuthUtil.checkRefreshTokenAndUserId(refreshToken, userId);
         if (!checked) {
             throw new JwtAuthenticationException(ErrorCode.INVALID_CREDENTIALS.getMessage());
         }
@@ -108,7 +108,7 @@ public class JwtTokenService implements JwtTokenUseCase {
         cookieUtil.deleteAccessTokenCookie(response);
 
         // DB에서도 삭제
-        redisUtil.deleteByRefreshToken(refreshToken);
+        RedisAuthUtil.deleteByRefreshToken(refreshToken);
     }
 
 }

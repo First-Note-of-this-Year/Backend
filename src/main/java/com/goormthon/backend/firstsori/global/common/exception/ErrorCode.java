@@ -75,7 +75,8 @@ public enum ErrorCode {
         INTERNAL_SERVER_ERROR(500_000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
         SPOTIFY_API_CALL_FAILED(500_001, HttpStatus.INTERNAL_SERVER_ERROR, "Spotify API 호출이 실패했습니다."),
         REDIS_SERIALIZATION_ERROR(500_002, HttpStatus.INTERNAL_SERVER_ERROR, "Redis 캐싱 직렬화를 실패했습니다."),
-        REDIS_JSON_PROCESSING_ERROR(500_003, HttpStatus.INTERNAL_SERVER_ERROR, "Redis JSON 처리에 실패했습니다.");
+        REDIS_JSON_PROCESSING_ERROR(500_003, HttpStatus.INTERNAL_SERVER_ERROR, "Redis JSON 처리에 실패했습니다."),
+        STREAM_CONSUME_FAILED(500_004, HttpStatus.INTERNAL_SERVER_ERROR, "스트림 소비 중 오류가 발생했습니다.");
 
 
         // 기타 공통

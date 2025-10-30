@@ -32,6 +32,7 @@ public class Message extends BaseTimeEntity {
     private String content;
 
     @Column(nullable = true)
+    @Builder.Default
     private Boolean read = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
