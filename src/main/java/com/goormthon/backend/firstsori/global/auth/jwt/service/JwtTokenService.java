@@ -4,7 +4,7 @@ import com.goormthon.backend.firstsori.global.auth.jwt.exception.JwtAuthenticati
 import com.goormthon.backend.firstsori.global.auth.jwt.util.CookieUtil;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenExtractor;
 import com.goormthon.backend.firstsori.global.auth.jwt.util.JwtTokenProvider;
-import com.goormthon.backend.firstsori.global.auth.jwt.util.RedisUtil;
+import com.goormthon.backend.firstsori.global.auth.jwt.util.RedisAuthUtil;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
