@@ -6,7 +6,6 @@ import com.goormthon.backend.firstsori.domain.music.domain.service.GetMusicSearc
 import com.goormthon.backend.firstsori.domain.music.domain.service.GetPopularMusicService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

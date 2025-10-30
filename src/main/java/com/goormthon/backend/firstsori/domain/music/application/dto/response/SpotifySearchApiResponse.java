@@ -1,4 +1,4 @@
-package com.goormthon.backend.firstsori.global.spotify.application.dto.response;
+package com.goormthon.backend.firstsori.domain.music.application.dto.response;
 
 import lombok.Data;
 

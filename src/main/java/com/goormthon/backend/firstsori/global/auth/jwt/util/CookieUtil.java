@@ -65,12 +65,12 @@ public class CookieUtil {
     // 공통 쿠키 저장 메서드
     private void setCookie(HttpServletResponse response, String cookieName, String tokenValue, long maxAge) {
         ResponseCookie cookie = ResponseCookie.from(cookieName, tokenValue)
-                .domain(".firstsori.site") // 하위 서브도메인 포함
-                .maxAge(maxAge)
-                .path(cookiePathOption)
-                .httpOnly(true)
-                .secure(secureOption)  // Dev/Prod 환경에 따라 설정됨
-                .sameSite(sameSiteOption)
+//                .domain(".firstsori.site") // 모든 하위 도메인(subdomain)에서 쿠키 접근 허용
+                .maxAge(maxAge)             // 쿠키의 유효 기간 설정 (초 단위)
+                .path(cookiePathOption)     // 쿠키가 유효한 경로 설정 (일반적으로 '/')
+                .httpOnly(true)             // 클라이언트 스크립트(JS)의 접근을 차단하여 XSS 공격 방지
+                .secure(secureOption)       // HTTPS 연결에서만 쿠키 전송 허용 (Dev/Prod 환경에 따라 설정)
+                .sameSite(sameSiteOption)   // CSRF 공격 방지를 위한 SameSite 정책 설정 (Strict, Lax, None)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

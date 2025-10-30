@@ -4,19 +4,15 @@ import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.music.domain.entity.Music;
 import com.goormthon.backend.firstsori.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 이게 없으면 빈생성자를 무조건 만들어 둬야함 - JPA
 @Table(name = "messages")
-@AllArgsConstructor
 @SuperBuilder
 public class Message extends BaseTimeEntity {
 
@@ -45,8 +41,5 @@ public class Message extends BaseTimeEntity {
     @Column(nullable = true)
     private String customImageUrl;  // S3 이미지 URL
 
-    public void setRead() {
-        this.read = true;
-    }
 
 }
