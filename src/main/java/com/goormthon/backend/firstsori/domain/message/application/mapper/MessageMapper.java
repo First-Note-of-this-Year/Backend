@@ -33,6 +33,9 @@ public class MessageMapper {
                                 : message.getMusic().getAlbumImageUrl()
                 )
                 .songUrl(message.getMusic().getSongUrl())
+                .youtubeUrl(message.getMusic().getYoutubeUrl())
+                .itunesUrl(message.getMusic().getItunesUrl())
+                .mine(message.getMine())
                 .build();
     }
 

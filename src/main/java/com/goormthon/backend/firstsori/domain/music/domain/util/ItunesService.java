@@ -71,12 +71,14 @@ public class ItunesService {
        log.info(node.toString());
         String artistName = node.get("artistName").asText();
         String trackName = node.get("trackName").asText();
+        String itunesUrl = node.get("viewUrl").asText();
 
         return Music.builder()
                 .songName(trackName)
                 .artist(artistName)
                 .songUrl(node.get("previewUrl") != null ? node.get("previewUrl").asText() : null)
                 .albumImageUrl(node.get("artworkUrl100").asText().replace("100x100", "500x500")) // 고화질로 변환 시도
+                .itunesUrl(itunesUrl)
                 .build();
     }
 

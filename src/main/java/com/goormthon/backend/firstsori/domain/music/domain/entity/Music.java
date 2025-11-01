@@ -28,12 +28,20 @@ public class Music {
     @Column(nullable = true)
     private String albumImageUrl;
 
+    @Column(nullable = true)
+    private String youtubeUrl;
+    
+    @Column(nullable = false)
+    private String itunesUrl;
+
     @Builder
-    public Music(String songName, String artist, String albumImageUrl, String songUrl){
+    public Music(String songName, String artist, String albumImageUrl, String songUrl, String youtubeUrl, String itunesUrl){
         this.songName = songName;
         this.artist = artist;
         this.songUrl = songUrl;
         this.albumImageUrl = albumImageUrl;
+        this.youtubeUrl = youtubeUrl;
+        this.itunesUrl = itunesUrl;
     }
 
 }
