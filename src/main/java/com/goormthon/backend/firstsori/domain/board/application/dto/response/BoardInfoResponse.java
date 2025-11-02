@@ -1,5 +1,6 @@
 package com.goormthon.backend.firstsori.domain.board.application.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -19,6 +20,7 @@ public record BoardInfoResponse(
         Integer messageCount,
 
         @Schema(description="서버 시간")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime serverTime
 
 ) {
