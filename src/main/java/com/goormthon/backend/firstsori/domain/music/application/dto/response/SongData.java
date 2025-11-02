@@ -24,9 +24,9 @@ public record SongData(
         String itunesUrl,
 
         @Schema(description = "youtube URL")
-        String youtubeUrl,
+        String youtubeUrl
 
-        @Schema(description = "미리 듣기 URL (30초 미리듣기 등)")
-        String prestreamingUrl
+//        @Schema(description = "미리 듣기 URL (30초 미리듣기 등)")
+//        String prestreamingUrl
 ) {
 }

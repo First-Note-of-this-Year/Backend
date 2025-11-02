@@ -68,7 +68,7 @@ public class MessageUseCaseImpl implements MessageUseCase {
                     .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         // 음악 정보 엔티티 생성
-        Music music = MusicMapper.toMusicEntity(request.songTitle(), request.artist(), request.albumImageUrl(), request.songUrl());
+        Music music = MusicMapper.toMusicEntity(request.songTitle(), request.artist(), request.albumImageUrl(), request.songUrl(),request.itunesUrl(),request.youtubeUrl());
         Music persistedMusic=saveMusicService.saveMusic(music);
 
         // 메시지 엔티티 생성

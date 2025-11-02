@@ -37,6 +37,9 @@ public record MessageResponse(
         String youtubeUrl,
 
         @Schema(description = "iTunes URL")
-        String itunesUrl
+        String itunesUrl,
+        
+        @Schema(description = "본인 message인지 여부")
+        Boolean mine
 ) {
 }

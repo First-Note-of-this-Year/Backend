@@ -82,9 +82,10 @@ public class MessageMapper {
                 .board(board)
                 .senderName(request.senderName())
                 .content(request.content())
-                .music(music)
                 .read(false)
+                .music(music)
                 .customImageUrl(null)
+                .mine(request.mine())
                 .build();
     }
 

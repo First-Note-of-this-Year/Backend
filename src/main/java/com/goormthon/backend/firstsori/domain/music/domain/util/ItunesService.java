@@ -55,7 +55,7 @@ public class ItunesService {
             }
 
             List<Music> musicList = StreamSupport.stream(results.spliterator(), false)
-                    .filter(node -> "song".equals(node.get("kind").asText())) // 노래 타입만 필터링
+                    .filter(node -> "song".equals(node.path("kind").asText())) // 노래 타입만 필터링
                     .map(this::mapJsonNodeToMusic)
                     .collect(Collectors.toList());
 
@@ -69,15 +69,15 @@ public class ItunesService {
     // 개별 JSON 노드를 Music 엔티티로 매핑
     private Music mapJsonNodeToMusic(JsonNode node) {
        log.info(node.toString());
-        String artistName = node.get("artistName").asText();
-        String trackName = node.get("trackName").asText();
-        String itunesUrl = node.get("viewUrl").asText();
+        String artistName = node.path("artistName").asText();
+        String trackName = node.path("trackName").asText();
+        String itunesUrl = node.path("viewUrl").asText();
 
         return Music.builder()
                 .songName(trackName)
                 .artist(artistName)
-                .songUrl(node.get("previewUrl") != null ? node.get("previewUrl").asText() : null)
-                .albumImageUrl(node.get("artworkUrl100").asText().replace("100x100", "500x500")) // 고화질로 변환 시도
+                .songUrl(node.path("previewUrl") != null ? node.path("previewUrl").asText() : null)
+                .albumImageUrl(node.path("artworkUrl100").asText().replace("100x100", "500x500")) // 고화질로 변환 시도
                 .itunesUrl(itunesUrl)
                 .build();
     }
