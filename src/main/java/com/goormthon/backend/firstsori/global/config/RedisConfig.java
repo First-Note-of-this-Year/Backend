@@ -8,10 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Duration;
 
 
 @Configuration
@@ -32,12 +35,16 @@ public class RedisConfig {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
         config.setHostName(redisHost);
         config.setPort(redisPort);
-        // 비밀번호 설정
+
         if (redisPassword != null && !redisPassword.isBlank()) {
             config.setPassword(RedisPassword.of(redisPassword));
         }
-        // LettuceConnectionFactory를 사용하여 팩토리 반환
-        return new LettuceConnectionFactory(config);
+
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                .commandTimeout(Duration.ofSeconds(120)) // 기본 60초 → 120초로 늘리기
+                .build();
+
+        return new LettuceConnectionFactory(config, clientConfig);
     }
 
     /**

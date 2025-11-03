@@ -76,8 +76,13 @@ public enum ErrorCode {
         SPOTIFY_API_CALL_FAILED(500_001, HttpStatus.INTERNAL_SERVER_ERROR, "Spotify API 호출이 실패했습니다."),
         REDIS_SERIALIZATION_ERROR(500_002, HttpStatus.INTERNAL_SERVER_ERROR, "Redis 캐싱 직렬화를 실패했습니다."),
         REDIS_JSON_PROCESSING_ERROR(500_003, HttpStatus.INTERNAL_SERVER_ERROR, "Redis JSON 처리에 실패했습니다."),
-        STREAM_CONSUME_FAILED(500_004, HttpStatus.INTERNAL_SERVER_ERROR, "스트림 소비 중 오류가 발생했습니다.");
-
+        STREAM_CONSUME_FAILED(500_004, HttpStatus.INTERNAL_SERVER_ERROR, "스트림 소비 중 오류가 발생했습니다."),
+        IO_EXCEPTION_ON_IMAGE_DELETE(500_005, HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제 중 IO 예외가 발생했습니다."),
+        INVALID_FILE_EXTENSION(500_006, HttpStatus.INTERNAL_SERVER_ERROR, "유효하지 않은 파일 확장자입니다."),
+        PUT_OBJECT_ERROR(500_007, HttpStatus.INTERNAL_SERVER_ERROR, "S3에 객체를 업로드하는 도중 오류가 발생했습니다."),
+        IO_EXCEPTION_ON_IMAGE_SAVE(500_008, HttpStatus.INTERNAL_SERVER_ERROR, "이미지 저장 중 IO 예외가 발생했습니다."),
+        NO_FILE_EXTENSION(500_009, HttpStatus.INTERNAL_SERVER_ERROR, "파일 확장자가 존재하지 않습니다."),
+        EMPTY_FILE(500_010, HttpStatus.INTERNAL_SERVER_ERROR, "파일이 비어있습니다.");
 
         // 기타 공통
         private final int code;
