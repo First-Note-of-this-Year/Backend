@@ -33,6 +33,9 @@ public class MessageMapper {
                                 : message.getMusic().getAlbumImageUrl()
                 )
                 .songUrl(message.getMusic().getSongUrl())
+                .youtubeUrl(message.getMusic().getYoutubeUrl())
+                .itunesUrl(message.getMusic().getItunesUrl())
+                .mine(message.getMine())
                 .build();
     }
 
@@ -79,9 +82,10 @@ public class MessageMapper {
                 .board(board)
                 .senderName(request.senderName())
                 .content(request.content())
-                .music(music)
                 .read(false)
+                .music(music)
                 .customImageUrl(null)
+                .mine(request.mine())
                 .build();
     }
 

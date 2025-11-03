@@ -20,10 +20,13 @@ public record SongData(
         @Schema(description = "커버 이미지 URL (앨범 이미지)")
         String coverImage,
 
-//        @Schema(description = "곡 스트리밍 URL (Spotify 등 외부 링크)")
-//        String streamingUrl,
+        @Schema(description = "iTunes URL")
+        String itunesUrl,
 
-        @Schema(description = "미리 듣기 URL (30초 미리듣기 등)")
-        String prestreamingUrl
+        @Schema(description = "youtube URL")
+        String youtubeUrl
+
+//        @Schema(description = "미리 듣기 URL (30초 미리듣기 등)")
+//        String prestreamingUrl
 ) {
 }

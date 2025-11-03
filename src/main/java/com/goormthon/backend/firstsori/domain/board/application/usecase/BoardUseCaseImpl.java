@@ -10,6 +10,7 @@ import com.goormthon.backend.firstsori.domain.board.application.mapper.BoardMapp
 import com.goormthon.backend.firstsori.domain.board.domain.entity.Board;
 import com.goormthon.backend.firstsori.domain.board.domain.repository.BoardRepository;
 import com.goormthon.backend.firstsori.domain.board.domain.service.GetBoardService;
+import com.goormthon.backend.firstsori.domain.board.domain.service.S3UploadService;
 import com.goormthon.backend.firstsori.domain.user.application.usecase.UserUseCase;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 import com.goormthon.backend.firstsori.domain.user.domain.repository.UserRepository;
@@ -34,9 +35,7 @@ public class BoardUseCaseImpl implements BoardUseCase {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-    private final UserUseCase userUseCase;
-    private final JwtTokenExtractor jwtTokenExtractor;
-    private final GetUserService getUserService;
+    private final S3UploadService s3UploadService;
     private final GetBoardService getBoardService;
 
     @Transactional
@@ -128,11 +127,24 @@ public class BoardUseCaseImpl implements BoardUseCase {
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         // 1) 사용자 프로필 이미지 먼저 반영 (보드로의 cascade 저장이 있어도 이후 닉네임이 최종 반영되도록 순서 조정)
+        // A. 기존 이미지 삭제 (선택 사항: 새로운 이미지가 업로드될 때만)
         User savedUser = user;
-        if (request.getProfileImage() != null) {
-            user.update(null, null, request.getProfileImage());
-            savedUser = userRepository.saveAndFlush(user);
+        if (user.getProfileImage() != null) {
+            try {
+                s3UploadService.deleteImage(user.getProfileImage());
+            } catch (CustomException e) {
+                // soft fail
+                log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
+            }
         }
+
+        // B. 새 이미지 S3에 업로드
+        String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
+
+        // C. User 엔티티에 새 URL 저장
+        user.update(null, null, newProfileImageUrl);
+        savedUser = userRepository.saveAndFlush(user);
+
 
         // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
         if (request.getNickname() != null && !request.getNickname().isBlank()) {

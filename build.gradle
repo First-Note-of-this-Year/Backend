@@ -38,6 +38,8 @@ dependencies {
     implementation 'redis.clients:jedis'
     implementation 'org.postgresql:postgresql:42.7.3'
     testImplementation 'com.h2database:h2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 
     // 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'

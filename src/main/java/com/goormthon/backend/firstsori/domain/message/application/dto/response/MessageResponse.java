@@ -31,6 +31,15 @@ public record MessageResponse(
         String coverImageUrl,
 
         @Schema(description = "음악 URL")
-        String songUrl
+        String songUrl,
+
+        @Schema(description = "유튜브 URL")
+        String youtubeUrl,
+
+        @Schema(description = "iTunes URL")
+        String itunesUrl,
+        
+        @Schema(description = "본인 message인지 여부")
+        Boolean mine
 ) {
 }

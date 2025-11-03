@@ -42,5 +42,8 @@ public class Message extends BaseTimeEntity {
     @Column(nullable = true)
     private String customImageUrl;  // S3 이미지 URL
 
+    @Column(nullable = false)
+    private Boolean mine;
+
 
 }

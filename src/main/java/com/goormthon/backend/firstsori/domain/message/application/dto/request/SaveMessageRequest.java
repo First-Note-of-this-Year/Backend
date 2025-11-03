@@ -37,8 +37,20 @@ public record SaveMessageRequest(
         @NotNull(message = "앨범 이미지 URL은 필수입니다.")
         String albumImageUrl,
 
-        @Schema(description = "노래 URL", example = "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/96/5e/3d/965e3deb-ab0b-4bcd-07a8-a5eb08e149f8/mzaf_18013741809430634334.plus.aac.p.m4a")
-        @NotNull(message = "노래 URL은 필수입니다.")
-        String songUrl
+        @Schema(description = "미리듣기 URL", example = "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/96/5e/3d/965e3deb-ab0b-4bcd-07a8-a5eb08e149f8/mzaf_18013741809430634334.plus.aac.p.m4a")
+        @NotNull(message = "미리듣기 URL은 필수입니다.")
+        String songUrl,
+
+        @Schema(description = "유튜브 URL", example = "https://www.youtube.com/7JEI0Hr4eHI")
+        String youtubeUrl,
+
+        @Schema(description = "iTunes URL", example = "http:// a392.itunes.apple.com/jp/r10/ Music/y2005/m06/d03/h05/s05.zdzqlufu.p.m4p")
+        @NotNull(message = "iTunes URL은 필수입니다.")
+        String itunesUrl,
+
+        @Schema(description = "자신의 메시지 여부", example = "false")
+        @NotNull(message = "자신의 메시지 여부는 필수입니다.")
+        Boolean mine
+
 ) {
 }

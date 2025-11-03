@@ -30,4 +30,7 @@ public class MusicChartResponse {
 
     @Schema(description = "인기 점수", example = "15.5")
     private double score;
+
+    @Schema(description = "iTunes URL", example = "http:// a392.itunes.apple.com/jp/r10/ Music/y2005/m06/d03/h05/s05.zdzqlufu.p.m4p")
+    private String iTunesUrl;
 }
