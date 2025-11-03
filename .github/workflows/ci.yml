@@ -38,6 +38,11 @@ jobs:
       - name: Create .env file from Secrets
         run: |
           echo "${{ secrets.ENV }}" > .env
+      
+      # docker-compose.yml 파일을 Secrets에서 통째로 생성
+      - name: Create docker-compose.yml file from Secrets
+        run: |
+          echo "${{ secrets.DOCKER_COMPOSE_YML }}" > docker-compose.yml
 
       - name: Build with Gradle
         run: ./gradlew build -x test
