@@ -32,17 +32,23 @@ jobs:
       - name: Create application.yml from Secrets
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
+          cat <<'EOF' > src/main/resources/application.yml
+          ${{ secrets.APPLICATION_YML }}
+          EOF
 
       # .env 파일을 Secrets에서 통째로 생성
       - name: Create .env file from Secrets
         run: |
-          echo "${{ secrets.ENV }}" > .env
+          cat <<'EOF' > .env
+          ${{ secrets.ENV }}
+          EOF
       
       # docker-compose.yml 파일을 Secrets에서 통째로 생성
       - name: Create docker-compose.yml file from Secrets
         run: |
-          echo "${{ secrets.DOCKER_COMPOSE_YML }}" > docker-compose.yml
+          cat <<'EOF' > docker-compose.yml
+          ${{ secrets.DOCKER_COMPOSE_YML }}
+          EOF
 
       - name: Build with Gradle
         run: ./gradlew build -x test
