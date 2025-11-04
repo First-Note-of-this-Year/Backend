@@ -25,7 +25,7 @@ import static com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Ro
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class fig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
