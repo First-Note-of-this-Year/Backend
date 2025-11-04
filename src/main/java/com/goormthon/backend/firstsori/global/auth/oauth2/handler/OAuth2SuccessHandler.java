@@ -42,6 +42,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("시큐리티에 저장된 인증 정보 :{}", authentication.getPrincipal().toString());
 
         // 쿠키와 함께 리다이렉트 (프론트 홈 주소)
-        getRedirectStrategy().sendRedirect(request, response, REDIRECT_PATH);
+        String redirectPath = REDIRECT_PATH + "/login/oauth2/code/kakao";
+        getRedirectStrategy().sendRedirect(request, response, redirectPath);
     }
 }
