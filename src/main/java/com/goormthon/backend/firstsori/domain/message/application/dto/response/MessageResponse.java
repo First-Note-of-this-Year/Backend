@@ -19,7 +19,7 @@ public record MessageResponse(
         String content,
 
         @Schema(description = "음악 고유 ID")
-        UUID songId,
+        UUID musicId,
 
         @Schema(description = "음악 제목")
         String songTitle,

@@ -24,7 +24,7 @@ public class MessageMapper {
                 .messageId(message.getMessageId())
                 .sender(message.getSenderName())
                 .content(message.getContent())
-                .songId(message.getMusic().getMusicId())
+                .musicId(message.getMusic().getMusicId())
                 .songTitle(message.getMusic().getSongName())
                 .artist(message.getMusic().getArtist())
                 .coverImage(
