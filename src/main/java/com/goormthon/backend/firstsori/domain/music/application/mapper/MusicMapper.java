@@ -33,7 +33,8 @@ public class MusicMapper {
                 .songTitle(music.getSongName())
                 .artist(music.getArtist())
                 .coverImage(music.getAlbumImageUrl())
-                .itunesUrl(music.getSongUrl())
+                .songUrl(music.getSongUrl())
+                .itunesUrl(music.getItunesUrl())
                 .build();
     }
 }

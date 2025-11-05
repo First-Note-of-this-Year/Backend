@@ -20,6 +20,9 @@ public record SongData(
         @Schema(description = "커버 이미지 URL (앨범 이미지)")
         String coverImage,
 
+        @Schema(description = "노래 URL (미리듣기 등)")
+        String songUrl,
+
         @Schema(description = "iTunes URL")
         String itunesUrl,
 
