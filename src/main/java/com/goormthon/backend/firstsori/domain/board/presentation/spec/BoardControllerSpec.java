@@ -66,7 +66,7 @@ public interface BoardControllerSpec {
             @AuthenticationPrincipal PrincipalDetails user,
             @Parameter(
                     description = "페이징 정보",
-                    example = "{ \"page\": 0, \"size\": 10, \"sort\": [\"desc\"] }"
+                    example = "{ \"pageNumber\": 0, \"pageSize\": 10, \"sort\": [\"desc\"] }"
             )
             Pageable pageable
     );
@@ -166,8 +166,8 @@ public interface BoardControllerSpec {
             )
             @PathVariable String shareUri,
             @Parameter(
-                    description = "페이지 정보 (page, size, sort)",
-                    example = "{ \"page\": 0, \"size\": 10, \"sort\": [\"desc\"] }"
+                    description = "페이지 정보 (pageNumber, pageSize, sort)",
+                    example = "{ \"pageNumber\": 0, \"pageSize\": 10, \"sort\": [\"desc\"] }"
             )
             Pageable pageable
     );

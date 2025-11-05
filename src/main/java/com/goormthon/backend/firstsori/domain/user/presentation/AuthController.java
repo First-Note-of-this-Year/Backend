@@ -88,7 +88,7 @@ public class AuthController implements AuthControllerSpec {
     private User createDev() {
         return User.builder()
                 .email("firstSori_kakao@example.com")
-                .name("어드민")
+                .nickname("어드민")
                 .profileImage("https://firstsori-bucket.s3.ap-northeast-2.amazonaws.com/default-profile.png")
                 .role(ADMIN)
                 .status(Status.ACTIVE)

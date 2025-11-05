@@ -13,22 +13,22 @@ public record MessageResponse(
         UUID messageId,
 
         @Schema(description = "메시지 발신자 닉네임")
-        String senderName,
+        String sender,
 
         @Schema(description = "메시지 내용")
         String content,
 
         @Schema(description = "음악 고유 ID")
-        UUID songId,
+        UUID musicId,
 
         @Schema(description = "음악 제목")
-        String songName,
+        String songTitle,
 
         @Schema(description = "아티스트 이름")
         String artist,
 
         @Schema(description = "커버 이미지 URL")
-        String coverImageUrl,
+        String coverImage,
 
         @Schema(description = "음악 URL")
         String songUrl,

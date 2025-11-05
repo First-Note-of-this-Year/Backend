@@ -30,8 +30,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = true)
     private String email;
 
-    @Column(nullable = true)
-    private String name;
+    @Column(name = "name", nullable = true)
+    private String nickname;
 
     @Column(nullable = true)
     private String profileImage;
@@ -54,8 +54,8 @@ public class User extends BaseTimeEntity {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Board board;
 
-    public void update(String name, String email, String profileImage) {
-        if (name != null) this.name = name;
+    public void update(String nickname, String email, String profileImage) {
+        if (nickname != null) this.nickname = nickname;
         if (email != null) this.email = email;
         if (profileImage != null) this.profileImage = profileImage;
     }

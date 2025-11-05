@@ -16,7 +16,7 @@ public record MessageListResponse(
         String sender,
 
         @Schema(description = "커버 이미지 URL")
-        String coverImageUrl,
+        String coverImage,
 
         @Schema(description = "메시지 읽음 여부")
         boolean read

@@ -61,7 +61,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
             // 존재하지 않는 경우 신규 유저 생성
             User newUser = User.builder()
                     .email(userInfo.getEmail())
-                    .name(userInfo.getUserName())
+                    .nickname(userInfo.getUserName())
                     .profileImage(userInfo.getImageUrl())
                     .role(Role.USER)
                     .status(Status.ACTIVE)
