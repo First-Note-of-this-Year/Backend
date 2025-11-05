@@ -27,7 +27,7 @@ public class UserUseCaseImpl implements UserUseCase {
     public void updateUser(User user) {
         var entity = userRepository.findByUserId(user.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.USER_NOT_FOUND.getMessage()));
-        entity.update(user.getName(), user.getEmail(), user.getProfileImage());
+        entity.update(user.getNickname(), user.getEmail(), user.getProfileImage());
     }
 
     @Override

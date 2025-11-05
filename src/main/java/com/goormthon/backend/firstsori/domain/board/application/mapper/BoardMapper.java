@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 
 public class BoardMapper {
 
-    public static BoardInfoResponse toBoardInfoResponse(String name,String profileImage,Integer messageCount) {
+    public static BoardInfoResponse toBoardInfoResponse(String nickname,String profileImage,Integer messageCount) {
         return BoardInfoResponse.builder()
-                .name(name)
+                .nickname(nickname)
                 .profileImage(profileImage)
                 .messageCount(messageCount)
                 .serverTime(LocalDateTime.now())

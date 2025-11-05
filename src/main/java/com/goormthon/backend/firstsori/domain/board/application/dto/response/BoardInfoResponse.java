@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Schema(description = "보드 정보 및 소유자 프로필 응답")
 public record BoardInfoResponse(
         @Schema(description = "보드 소유자의 닉네임")
-        String name,
+        String nickname,
 
         @Schema(description = "보드 소유자의 프로필 이미지 URL")
         String profileImage,

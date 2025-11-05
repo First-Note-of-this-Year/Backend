@@ -20,9 +20,9 @@ public class MusicMapper {
     public static MusicChartResponse toMusicChartResponse(Music music,double score) {
         return MusicChartResponse.builder()
                 .musicId(music.getMusicId())
-                .songName(music.getSongName())
+                .songTitle(music.getSongName())
                 .artist(music.getArtist())
-                .albumImageUrl(music.getAlbumImageUrl())
+                .coverImage(music.getAlbumImageUrl())
                 .songUrl(music.getSongUrl())
                 .score(score)
                 .build();

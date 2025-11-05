@@ -18,5 +18,5 @@ public class BoardPreviewResponse {
         private UUID musicId;
 
         @Schema(description = "음악 앨범 커버 이미지 URL", example = "https://image.server.com/album/cover.jpg")
-        private String musicCoverUrl;
+        private String coverImage;
 }

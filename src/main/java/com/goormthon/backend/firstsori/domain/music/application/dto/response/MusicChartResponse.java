@@ -17,13 +17,13 @@ public class MusicChartResponse {
     private UUID musicId;
 
     @Schema(description = "노래 제목", example = "Shape of You")
-    private String songName;
+    private String songTitle;
 
     @Schema(description = "가수 이름", example = "Ed Sheeran")
     private String artist;
 
     @Schema(description = "앨범 이미지 URL", example = "https://example.com/album/image.jpg")
-    private String albumImageUrl;
+    private String coverImage;
 
     @Schema(description = "노래 URL", example = "https://example.com/song/url")
     private String songUrl;

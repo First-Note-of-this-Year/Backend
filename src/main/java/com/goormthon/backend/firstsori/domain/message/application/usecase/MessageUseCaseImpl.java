@@ -66,7 +66,7 @@ public class MessageUseCaseImpl implements MessageUseCase {
 
         Board board = getBoardService.getBoardBySharedId(request.shareUri());
         // 음악 정보 엔티티 생성
-        Music music = MusicMapper.toMusicEntity(request.songTitle(), request.artist(), request.albumImageUrl(), request.songUrl(),request.itunesUrl(),request.youtubeUrl());
+        Music music = MusicMapper.toMusicEntity(request.songTitle(), request.artist(), request.coverImage(), request.songUrl(),request.itunesUrl(),request.youtubeUrl());
         Music persistedMusic=saveMusicService.saveMusic(music);
 
         // 메시지 엔티티 생성

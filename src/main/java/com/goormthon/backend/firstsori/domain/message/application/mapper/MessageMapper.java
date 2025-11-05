@@ -22,12 +22,12 @@ public class MessageMapper {
         }
         return MessageResponse.builder()
                 .messageId(message.getMessageId())
-                .senderName(message.getSenderName())
+                .sender(message.getSenderName())
                 .content(message.getContent())
                 .songId(message.getMusic().getMusicId())
-                .songName(message.getMusic().getSongName())
+                .songTitle(message.getMusic().getSongName())
                 .artist(message.getMusic().getArtist())
-                .coverImageUrl(
+                .coverImage(
                         message.getCustomImageUrl() != null
                                 ? message.getCustomImageUrl()
                                 : message.getMusic().getAlbumImageUrl()
@@ -64,7 +64,7 @@ public class MessageMapper {
         return MessageListResponse.builder()
                 .messageId(message.getMessageId())
                 .sender(message.getSenderName())
-                .coverImageUrl(
+                .coverImage(
                         message.getCustomImageUrl() != null
                                 ? message.getCustomImageUrl()
                                 : message.getMusic().getAlbumImageUrl()
@@ -80,7 +80,7 @@ public class MessageMapper {
         }
         return Message.builder()
                 .board(board)
-                .senderName(request.senderName())
+                .senderName(request.sender())
                 .content(request.content())
                 .read(false)
                 .music(music)
@@ -93,7 +93,7 @@ public class MessageMapper {
         return BoardPreviewResponse.builder()
                 .messageId(message.getMessageId())
                 .musicId(message.getMusic().getMusicId())
-                .musicCoverUrl(message.getMusic().getAlbumImageUrl())
+                .coverImage(message.getMusic().getAlbumImageUrl())
                 .build();
     }
 
