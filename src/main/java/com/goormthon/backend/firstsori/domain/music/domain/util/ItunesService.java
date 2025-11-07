@@ -71,7 +71,8 @@ public class ItunesService {
        log.info(node.toString());
         String artistName = node.path("artistName").asText();
         String trackName = node.path("trackName").asText();
-        String itunesUrl = node.path("viewUrl").asText();
+        // iTunes detail page URL is typically under 'trackViewUrl'
+        String itunesUrl = node.path("trackViewUrl").asText();
 
         return Music.builder()
                 .songName(trackName)
