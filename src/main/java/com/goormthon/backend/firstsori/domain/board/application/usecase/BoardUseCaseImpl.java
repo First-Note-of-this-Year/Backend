@@ -124,43 +124,38 @@ public class BoardUseCaseImpl implements BoardUseCase {
     public UpdateBoardResponse updateBoard(UpdateBoardRequest request, User user) {
         // 사용자의 보드 조회
         Board board = boardRepository.findByUser(user)
-                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        // 1) 사용자 프로필 이미지 먼저 반영 (보드로의 cascade 저장이 있어도 이후 닉네임이 최종 반영되도록 순서 조정)
-        // A. 기존 이미지 삭제 (선택 사항: 새로운 이미지가 업로드될 때만)
-        User savedUser = user;
-        // 요청에 새 프로필 이미지가 있는 경우만 처리
+        // 1) 프로필 이미지 처리
         if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
             // 기존 이미지가 있다면 삭제
             if (user.getProfileImage() != null) {
                 try {
-                        s3UploadService.deleteImage(user.getProfileImage());
-                    } catch (CustomException e) {
-                        log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
-                    }
+                    s3UploadService.deleteImage(user.getProfileImage());
+                } catch (CustomException e) {
+                    log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
+                }
             }
-
-            // 새 이미지 S3에 업로드
+        
+            // 새 이미지 S3에 업로드 및 User 엔티티에 반영
             String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
-            // User 엔티티에 반영
             user.update(null, null, newProfileImageUrl);
+            userRepository.saveAndFlush(user);
         }
 
-        // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
-        // 2) 닉네임 업데이트 - JPA 엔티티 메서드 사용
+        // 2) 닉네임 업데이트
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
             board.updateNickname(request.getNickname());
         }
 
         return UpdateBoardResponse.builder()
                 .boardId(savedBoard.getBoardId())
-                .userId(savedUser.getUserId())
-                .nickname(responseNickname)
-                .profileImage(savedUser.getProfileImage())
+                .userId(savedBoard.getUser().getUserId())
+                .nickname(savedBoard.getNickname())
+                .profileImage(savedBoard.getUser().getProfileImage())
                 .shareUri(savedBoard.getShareUri())
                 .build();
     }
-
 }
 
 
