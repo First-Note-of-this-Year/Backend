@@ -8,6 +8,7 @@ import com.goormthon.backend.firstsori.domain.board.application.dto.response.Cre
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.GetShareUriResponse;
 import com.goormthon.backend.firstsori.domain.board.application.dto.response.UpdateBoardResponse;
 import com.goormthon.backend.firstsori.domain.board.application.usecase.BoardUseCase;
+import com.goormthon.backend.firstsori.domain.board.domain.util.OffsetBasedPageRequest;
 import com.goormthon.backend.firstsori.domain.board.presentation.spec.BoardControllerSpec;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageListResponse;
 import com.goormthon.backend.firstsori.domain.message.application.dto.response.MessageResponse;
@@ -16,7 +17,9 @@ import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetail
 import com.goormthon.backend.firstsori.global.common.response.ApiResponse;
 import com.goormthon.backend.firstsori.global.common.response.page.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +45,10 @@ public class BoardController implements BoardControllerSpec {
     @GetMapping
     public ApiResponse<PageResponse<MessageListResponse>> getMessages(
             @AuthenticationPrincipal PrincipalDetails user,
-            Pageable pageable) {
+            @RequestParam(defaultValue = "0") int pageNumber) {
+        int pageSize = calculatePageSize(pageNumber);
+        int offset = calculateOffset(pageNumber);
+        Pageable pageable = createPageableWithOffset(offset, pageSize);
         PageResponse<MessageListResponse> messageListResponses = messageUseCase.getMessages(user.getId(), pageable);
         return ApiResponse.ok(messageListResponses);
     }
@@ -51,7 +57,10 @@ public class BoardController implements BoardControllerSpec {
     @GetMapping("/share/{shareUri}")
     public ApiResponse<PageResponse<BoardPreviewResponse>> getMessagesFromNonOwner(
             @PathVariable String shareUri,
-            Pageable pageable) {
+            @RequestParam(defaultValue = "0") int pageNumber) {
+        int pageSize = calculatePageSize(pageNumber);
+        int offset = calculateOffset(pageNumber);
+        Pageable pageable = createPageableWithOffset(offset, pageSize);
         PageResponse<BoardPreviewResponse> response = messageUseCase.getMessagesByBoardShareUri(shareUri, pageable);
         return ApiResponse.ok(response);
     }
@@ -91,6 +100,35 @@ public class BoardController implements BoardControllerSpec {
     ) {
         UpdateBoardResponse response = boardUseCase.updateBoard(request, user.getUser());
         return ApiResponse.ok(response);
+    }
+
+    /**
+     * 페이지 번호에 따라 페이지 크기를 계산합니다.
+     * 0페이지: 10개, 1페이지부터: 11개씩
+     */
+    private int calculatePageSize(int pageNumber) {
+        return pageNumber == 0 ? 10 : 11;
+    }
+
+    /**
+     * 페이지 번호에 따라 올바른 offset을 계산합니다.
+     * 0페이지: offset = 0
+     * 1페이지: offset = 10
+     * 2페이지 이상: offset = 10 + (pageNumber - 1) * 11
+     */
+    private int calculateOffset(int pageNumber) {
+        if (pageNumber == 0) {
+            return 0;
+        }
+        return 10 + (pageNumber - 1) * 11;
+    }
+
+    /**
+     * offset과 pageSize를 사용하여 Pageable을 생성합니다.
+     * 커스텀 OffsetBasedPageRequest를 사용하여 정확한 offset을 보장합니다.
+     */
+    private Pageable createPageableWithOffset(int offset, int pageSize) {
+        return new OffsetBasedPageRequest(offset, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
 }

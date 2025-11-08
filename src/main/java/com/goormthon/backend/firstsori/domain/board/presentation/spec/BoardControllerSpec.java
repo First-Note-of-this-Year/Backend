@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -62,13 +63,12 @@ public interface BoardControllerSpec {
     })
     @GetMapping
     com.goormthon.backend.firstsori.global.common.response.ApiResponse<PageResponse<MessageListResponse>> getMessages(
-
             @AuthenticationPrincipal PrincipalDetails user,
             @Parameter(
-                    description = "페이징 정보",
-                    example = "{ \"pageNumber\": 0, \"pageSize\": 10, \"sort\": [\"desc\"] }"
+                    description = "페이지 번호 (0부터 시작, 0페이지는 10개, 1페이지부터는 11개씩 반환)",
+                    example = "0"
             )
-            Pageable pageable
+            @RequestParam(defaultValue = "0") int pageNumber
     );
 
     @Operation(
@@ -166,10 +166,10 @@ public interface BoardControllerSpec {
             )
             @PathVariable String shareUri,
             @Parameter(
-                    description = "페이지 정보 (pageNumber, pageSize, sort)",
-                    example = "{ \"pageNumber\": 0, \"pageSize\": 10, \"sort\": [\"desc\"] }"
+                    description = "페이지 번호 (0부터 시작, 0페이지는 10개, 1페이지부터는 11개씩 반환)",
+                    example = "0"
             )
-            Pageable pageable
+            @RequestParam(defaultValue = "0") int pageNumber
     );
 
     @Operation(
