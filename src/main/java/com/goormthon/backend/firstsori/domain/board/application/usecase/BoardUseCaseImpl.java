@@ -23,6 +23,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager; 
+import jakarta.persistence.PersistenceContext;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
