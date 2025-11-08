@@ -129,21 +129,22 @@ public class BoardUseCaseImpl implements BoardUseCase {
         // 1) 사용자 프로필 이미지 먼저 반영 (보드로의 cascade 저장이 있어도 이후 닉네임이 최종 반영되도록 순서 조정)
         // A. 기존 이미지 삭제 (선택 사항: 새로운 이미지가 업로드될 때만)
         User savedUser = user;
-        if (user.getProfileImage() != null) {
-            try {
-                s3UploadService.deleteImage(user.getProfileImage());
-            } catch (CustomException e) {
-                // soft fail
-                log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
+        // 프로필 이미지가 있을 때만 처리
+        if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+            if (user.getProfileImage() != null) {
+                try {
+                    s3UploadService.deleteImage(user.getProfileImage());
+                } catch (CustomException e) {
+                    // soft fail
+                    log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
+                }
             }
+            // B. 새 이미지 S3에 업로드
+            String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
+            // C. User 엔티티에 새 URL 저장
+            user.update(null, null, newProfileImageUrl);
+            savedUser = userRepository.saveAndFlush(user);
         }
-
-        // B. 새 이미지 S3에 업로드
-        String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
-
-        // C. User 엔티티에 새 URL 저장
-        user.update(null, null, newProfileImageUrl);
-        savedUser = userRepository.saveAndFlush(user);
 
 
         // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
