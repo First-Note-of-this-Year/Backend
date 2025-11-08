@@ -6,14 +6,14 @@ import com.goormthon.backend.firstsori.domain.music.domain.entity.Music;
 
 public class MusicMapper {
 
-    public static Music toMusicEntity(String songName, String artist, String albumImageUrl, String songUrl,String itunesUrl, String youtubeUrl) {
+    public static Music toMusicEntity(String songName, String artist, String albumImageUrl, String songUrl, String youtubeUrl, String itunesUrl) {
         return Music.builder()
                 .songName(songName)
                 .artist(artist)
                 .albumImageUrl(albumImageUrl)
                 .songUrl(songUrl)
-                .itunesUrl(itunesUrl)
                 .youtubeUrl(youtubeUrl)
+                .itunesUrl(itunesUrl)
                 .build();
     }
 
