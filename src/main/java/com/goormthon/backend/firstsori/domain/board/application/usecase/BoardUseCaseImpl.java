@@ -126,11 +126,11 @@ public class BoardUseCaseImpl implements BoardUseCase {
         Board board = boardRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        // 1) 사용자 프로필 이미지 먼저 반영 (보드로의 cascade 저장이 있어도 이후 닉네임이 최종 반영되도록 순서 조정)
-        // A. 기존 이미지 삭제 (선택 사항: 새로운 이미지가 업로드될 때만)
         User savedUser = user;
-        // 프로필 이미지가 있을 때만 처리
-        if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+        
+        // 1) 사용자 프로필 이미지 반영 (request에 이미지가 있는 경우에만 실행)
+        if (request.getProfileImage() != null) { 
+            // A. 기존 이미지 삭제 (새로운 이미지가 업로드될 때만)
             if (user.getProfileImage() != null) {
                 try {
                     s3UploadService.deleteImage(user.getProfileImage());
@@ -139,20 +139,24 @@ public class BoardUseCaseImpl implements BoardUseCase {
                     log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
                 }
             }
+
             // B. 새 이미지 S3에 업로드
             String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
+
             // C. User 엔티티에 새 URL 저장
             user.update(null, null, newProfileImageUrl);
-            savedUser = userRepository.saveAndFlush(user);
+            savedUser = userRepository.saveAndFlush(user); // User 엔티티 변경사항 DB 반영
         }
 
-
         // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
+        // (이미지 업데이트 여부와 관계없이 닉네임 요청이 있으면 실행)
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            boardRepository.updateNicknameByUser(user, request.getNickname());
+            // boardRepository의 Custom Query를 사용하여 닉네임 업데이트
+            boardRepository.updateNicknameByUser(user, request.getNickname()); 
         }
 
         // 3) 최신 보드 재조회하여 최신 값으로 응답
+        // (user가 saveAndFlush 되었거나 닉네임이 업데이트되었으므로, 최신 Board 정보를 다시 가져옵니다.)
         Board savedBoard = boardRepository.findByUser(savedUser)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -168,7 +172,6 @@ public class BoardUseCaseImpl implements BoardUseCase {
                 .shareUri(savedBoard.getShareUri())
                 .build();
     }
-
 }
 
 
