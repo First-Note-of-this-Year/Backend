@@ -130,46 +130,50 @@ public class BoardUseCaseImpl implements BoardUseCase {
         
         // 1) 사용자 프로필 이미지 반영 (request에 이미지가 있는 경우에만 실행)
         if (request.getProfileImage() != null) { 
-            // A. 기존 이미지 삭제 (새로운 이미지가 업로드될 때만)
+            // A. 기존 이미지 삭제
             if (user.getProfileImage() != null) {
                 try {
                     s3UploadService.deleteImage(user.getProfileImage());
                 } catch (CustomException e) {
-                    // soft fail
                     log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
                 }
             }
 
-            // B. 새 이미지 S3에 업로드
+            // B. 새 이미지 S3에 업로드 및 C. User 엔티티에 새 URL 저장
             String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
-
-            // C. User 엔티티에 새 URL 저장
             user.update(null, null, newProfileImageUrl);
             savedUser = userRepository.saveAndFlush(user); // User 엔티티 변경사항 DB 반영
         }
 
-        // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
-        // (이미지 업데이트 여부와 관계없이 닉네임 요청이 있으면 실행)
+        // 2) 보드 닉네임 업데이트
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            // boardRepository의 Custom Query를 사용하여 닉네임 업데이트
-            boardRepository.updateNicknameByUser(user, request.getNickname()); 
+            // DB에 직접 UPDATE 쿼리를 실행 (Custom Query)
+            boardRepository.updateNicknameByUser(user, request.getNickname());
+            
+            // ⭐ 핵심 수정: DB에 직접 쿼리를 날렸으므로, 영속성 컨텍스트의 board 엔티티를 최신 닉네임으로 갱신
+            // (1) board 엔티티를 영속성 컨텍스트에서 분리하고
+            boardRepository.getEntityManager().detach(board); 
+            // (2) user로 board를 다시 조회하여 최신 상태로 영속성 컨텍스트에 로드
+            board = boardRepository.findByUser(user) 
+                    .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
         }
 
+
         // 3) 최신 보드 재조회하여 최신 값으로 응답
-        // (user가 saveAndFlush 되었거나 닉네임이 업데이트되었으므로, 최신 Board 정보를 다시 가져옵니다.)
-        Board savedBoard = boardRepository.findByUser(savedUser)
+        // (닉네임 업데이트 시 재조회가 이미 위에서 처리되었거나, 이미지 업데이트 시 savedUser가 최신 상태임)
+        Board finalBoard = boardRepository.findByUser(savedUser)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        // 응답 닉네임은 요청값 우선(부분 업데이트 시 최신 값 확정)
+        // 응답 닉네임은 요청값 우선 (요청 값이 있으면 요청 값, 없으면 DB의 최신 값)
         String responseNickname = (request.getNickname() != null && !request.getNickname().isBlank())
-                ? request.getNickname() : savedBoard.getNickname();
+                ? request.getNickname() : finalBoard.getNickname();
 
         return UpdateBoardResponse.builder()
-                .boardId(savedBoard.getBoardId())
+                .boardId(finalBoard.getBoardId())
                 .userId(savedUser.getUserId())
                 .nickname(responseNickname)
                 .profileImage(savedUser.getProfileImage())
-                .shareUri(savedBoard.getShareUri())
+                .shareUri(finalBoard.getShareUri())
                 .build();
     }
 }
