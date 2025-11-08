@@ -23,6 +23,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager; 
+import jakarta.persistence.PersistenceContext;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -37,6 +39,9 @@ public class BoardUseCaseImpl implements BoardUseCase {
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
     private final GetBoardService getBoardService;
+
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     @Transactional
     @Override
@@ -147,11 +152,15 @@ public class BoardUseCaseImpl implements BoardUseCase {
 
         // 3. 닉네임 업데이트 (닉네임 요청이 있는 경우에만 실행)
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            // ⭐ 변경 1: Custom Query 대신 엔티티의 값을 변경합니다.
             board.updateNickname(request.getNickname());
-            
-            // ⭐ 변경 2: 변경된 Board 엔티티를 명시적으로 저장합니다. (가장 확실한 반영 방법)
-            boardRepository.save(board);
+        
+            // ⭐ 변경 1: flush를 통해 DB에 변경사항을 강제 반영합니다.
+            boardRepository.save(board); 
+            boardRepository.flush();
+        
+            // ⭐ 변경 2: EntityManager.refresh()를 사용하여 DB의 최신값을 메모리 객체로 강제 로드합니다.
+            // board 객체의 닉네임이 최신 값으로 갱신됩니다.
+            entityManager.refresh(board); 
         }
         
         // 4. 응답 생성
