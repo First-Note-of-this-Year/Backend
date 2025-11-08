@@ -129,36 +129,28 @@ public class BoardUseCaseImpl implements BoardUseCase {
         // 1) 사용자 프로필 이미지 먼저 반영 (보드로의 cascade 저장이 있어도 이후 닉네임이 최종 반영되도록 순서 조정)
         // A. 기존 이미지 삭제 (선택 사항: 새로운 이미지가 업로드될 때만)
         User savedUser = user;
-        // 프로필 이미지가 있을 때만 처리
+        // 요청에 새 프로필 이미지가 있는 경우만 처리
         if (request.getProfileImage() != null && !request.getProfileImage().isEmpty()) {
+            // 기존 이미지가 있다면 삭제
             if (user.getProfileImage() != null) {
                 try {
-                    s3UploadService.deleteImage(user.getProfileImage());
-                } catch (CustomException e) {
-                    // soft fail
-                    log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
-                }
+                        s3UploadService.deleteImage(user.getProfileImage());
+                    } catch (CustomException e) {
+                        log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
+                    }
             }
-            // B. 새 이미지 S3에 업로드
-            String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
-            // C. User 엔티티에 새 URL 저장
-            user.update(null, null, newProfileImageUrl);
-            savedUser = userRepository.saveAndFlush(user);
-        }
 
+            // 새 이미지 S3에 업로드
+            String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
+            // User 엔티티에 반영
+            user.update(null, null, newProfileImageUrl);
+        }
 
         // 2) 보드 닉네임 업데이트를 마지막에 수행해 최종값 보장
+        // 2) 닉네임 업데이트 - JPA 엔티티 메서드 사용
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            boardRepository.updateNicknameByUser(user, request.getNickname());
+            board.updateNickname(request.getNickname());
         }
-
-        // 3) 최신 보드 재조회하여 최신 값으로 응답
-        Board savedBoard = boardRepository.findByUser(savedUser)
-                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
-
-        // 응답 닉네임은 요청값 우선(부분 업데이트 시 최신 값 확정)
-        String responseNickname = (request.getNickname() != null && !request.getNickname().isBlank())
-                ? request.getNickname() : savedBoard.getNickname();
 
         return UpdateBoardResponse.builder()
                 .boardId(savedBoard.getBoardId())
