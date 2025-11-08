@@ -122,13 +122,13 @@ public class BoardUseCaseImpl implements BoardUseCase {
     @Transactional
     @Override
     public UpdateBoardResponse updateBoard(UpdateBoardRequest request, User user) {
-        // 사용자의 보드 조회
+        // 1. 사용자의 보드 조회
         Board board = boardRepository.findByUser(user)
-            .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
-        User finalUser = user; // 최종 응답에 사용할 User 객체
-    
-        // 1) 사용자 프로필 이미지 반영 (request에 이미지가 있는 경우에만 실행)
+        User finalUser = user;
+        
+        // 2. 사용자 프로필 이미지 반영 (이미지 요청이 있는 경우에만 실행)
         if (request.getProfileImage() != null) { 
             // A. 기존 이미지 삭제
             if (user.getProfileImage() != null) {
@@ -142,22 +142,29 @@ public class BoardUseCaseImpl implements BoardUseCase {
             // B. 새 이미지 S3에 업로드 및 C. User 엔티티에 새 URL 저장
             String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
             user.update(null, null, newProfileImageUrl);
+            finalUser = userRepository.saveAndFlush(user); // User 엔티티 변경사항 DB 반영 및 finalUser 갱신
         }
-    
-        // 3) 응답 생성
-        // 닉네임 업데이트가 있었다면 board는 이미 최신 닉네임을 가지고 있음.
-        // profileImage 업데이트가 있었다면 finalUser는 이미 최신 profileImage를 가지고 있음.
-    
-        // 응답 닉네임은 DB의 최신값(board.getNickname())을 사용합니다.
-        String responseNickname = board.getNickname();
+
+        // 3. 닉네임 업데이트 (닉네임 요청이 있는 경우에만 실행)
+        if (request.getNickname() != null && !request.getNickname().isBlank()) {
+            // ⭐ 변경 1: Custom Query 대신 엔티티의 값을 변경합니다.
+            board.updateNickname(request.getNickname());
+            
+            // ⭐ 변경 2: 변경된 Board 엔티티를 명시적으로 저장합니다. (가장 확실한 반영 방법)
+            boardRepository.save(board);
+        }
+        
+        // 4. 응답 생성
+        // 닉네임은 board 엔티티에서 최신 값이 반영된 상태입니다.
+        // 프로필 이미지는 finalUser 엔티티에서 최신 값이 반영된 상태입니다.
 
         return UpdateBoardResponse.builder()
-            .boardId(board.getBoardId())
-            .userId(finalUser.getUserId())
-            .nickname(responseNickname)
-            .profileImage(finalUser.getProfileImage())
-            .shareUri(board.getShareUri())
-            .build();
+                .boardId(board.getBoardId())
+                .userId(finalUser.getUserId())
+                .nickname(board.getNickname())
+                .profileImage(finalUser.getProfileImage())
+                .shareUri(board.getShareUri())
+                .build();
     }
 }
 
