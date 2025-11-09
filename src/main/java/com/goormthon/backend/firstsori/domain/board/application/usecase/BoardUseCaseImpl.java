@@ -131,6 +131,10 @@ public class BoardUseCaseImpl implements BoardUseCase {
         Board board = boardRepository.findByUser(user)
                 .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
+        String currentNickname = board.getNickname();
+        String currentProfileImage = user.getProfileImage();
+        String newProfileImageUrl = currentProfileImage;
+        String newNickname = currentNickname;
         User finalUser = user;
         
         // 2. 사용자 프로필 이미지 반영 (이미지 요청이 있는 경우에만 실행)
@@ -139,29 +143,30 @@ public class BoardUseCaseImpl implements BoardUseCase {
             if (user.getProfileImage() != null) {
                 try {
                     s3UploadService.deleteImage(user.getProfileImage());
+
                 } catch (CustomException e) {
                     log.warn("기존 프로필 이미지 S3 삭제 실패: {}", user.getProfileImage(), e);
                 }
             }
-
+            newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
             // B. 새 이미지 S3에 업로드 및 C. User 엔티티에 새 URL 저장
-            String newProfileImageUrl = s3UploadService.uploadImage(request.getProfileImage());
-            user.update(null, null, newProfileImageUrl);
-            finalUser = userRepository.saveAndFlush(user); // User 엔티티 변경사항 DB 반영 및 finalUser 갱신
         }
+        user.update(null, null, newProfileImageUrl);
+        finalUser = userRepository.saveAndFlush(user); // User 엔티티 변경사항 DB 반영 및 finalUser 갱신
 
         // 3. 닉네임 업데이트 (닉네임 요청이 있는 경우에만 실행)
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            board.updateNickname(request.getNickname());
-        
-            // ⭐ 변경 1: flush를 통해 DB에 변경사항을 강제 반영합니다.
-            boardRepository.save(board); 
-            boardRepository.flush();
-        
-            // ⭐ 변경 2: EntityManager.refresh()를 사용하여 DB의 최신값을 메모리 객체로 강제 로드합니다.
-            // board 객체의 닉네임이 최신 값으로 갱신됩니다.
-            entityManager.refresh(board); 
+            newNickname = request.getNickname();
         }
+        board.updateNickname(newNickname);
+        
+        // ⭐ 변경 1: flush를 통해 DB에 변경사항을 강제 반영합니다.
+        boardRepository.save(board); 
+        boardRepository.flush();
+        
+        // ⭐ 변경 2: EntityManager.refresh()를 사용하여 DB의 최신값을 메모리 객체로 강제 로드합니다.
+        // board 객체의 닉네임이 최신 값으로 갱신됩니다.
+        entityManager.refresh(board); 
         
         // 4. 응답 생성
         // 닉네임은 board 엔티티에서 최신 값이 반영된 상태입니다.
