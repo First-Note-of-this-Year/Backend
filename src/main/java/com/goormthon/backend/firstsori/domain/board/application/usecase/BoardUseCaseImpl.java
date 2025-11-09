@@ -136,6 +136,7 @@ public class BoardUseCaseImpl implements BoardUseCase {
         String newProfileImageUrl = currentProfileImage;
         String newNickname = currentNickname;
         User finalUser = user;
+        log.info("nickname from request: {}", request.getNickname());
         
         // 2. 사용자 프로필 이미지 반영 (이미지 요청이 있는 경우에만 실행)
         if (request.getProfileImage() != null) { 
@@ -167,7 +168,7 @@ public class BoardUseCaseImpl implements BoardUseCase {
         // ⭐ 변경 2: EntityManager.refresh()를 사용하여 DB의 최신값을 메모리 객체로 강제 로드합니다.
         // board 객체의 닉네임이 최신 값으로 갱신됩니다.
         entityManager.refresh(board); 
-        
+        log.info("After flush & refresh - Board nickname: {}, User profileImage: {}", board.getNickname(), user.getProfileImage());
         // 4. 응답 생성
         // 닉네임은 board 엔티티에서 최신 값이 반영된 상태입니다.
         // 프로필 이미지는 finalUser 엔티티에서 최신 값이 반영된 상태입니다.
