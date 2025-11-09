@@ -23,6 +23,7 @@ public class RequestMatcherHolder {
             new RequestInfo(GET, "/", null),
             new RequestInfo(GET, "/login", null),
             new RequestInfo(POST, "/api/v1/auth/dev-login", null),
+            new RequestInfo(GET, "/api/v1/time", null),
 
             // auth
             new RequestInfo(POST, "/api/v1/oauth2/**", null),
