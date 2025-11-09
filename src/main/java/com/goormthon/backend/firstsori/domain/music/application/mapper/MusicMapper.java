@@ -25,6 +25,7 @@ public class MusicMapper {
                 .coverImage(music.getAlbumImageUrl())
                 .songUrl(music.getSongUrl())
                 .score(score)
+                .itunesUrl(music.getItunesUrl())
                 .build();
     }
 

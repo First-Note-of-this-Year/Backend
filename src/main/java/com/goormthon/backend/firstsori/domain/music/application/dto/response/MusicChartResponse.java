@@ -25,12 +25,12 @@ public class MusicChartResponse {
     @Schema(description = "앨범 이미지 URL", example = "https://example.com/album/image.jpg")
     private String coverImage;
 
-    @Schema(description = "노래 URL", example = "https://example.com/song/url")
+    @Schema(description = "노래 URL", example = "http:// a392.itunes.apple.com/jp/r10/ Music/y2005/m06/d03/h05/s05.zdzqlufu.p.m4p")
     private String songUrl;
 
     @Schema(description = "인기 점수", example = "15.5")
     private double score;
 
-    @Schema(description = "iTunes URL", example = "http:// a392.itunes.apple.com/jp/r10/ Music/y2005/m06/d03/h05/s05.zdzqlufu.p.m4p")
-    private String iTunesUrl;
+    @Schema(description = "iTunes URL", example = "https://music.apple.com/kr/album/%EA%B7%B8%EB%A6%AC%EC%9B%8C%ED%95%98%EB%8B%A4/1296748148?i=1296748271&uo=4")
+    private String itunesUrl;
 }
