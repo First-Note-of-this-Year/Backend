@@ -40,6 +40,11 @@ public class RequestMatcherHolder {
 
             // board shared
             new RequestInfo(GET, "/api/v1/board/share/**", null),
+            new RequestInfo(GET, "/api/v1/board/info/**",null),
+
+            //music
+            new RequestInfo(GET, "/api/v1/music/search", null),
+            new RequestInfo(GET, "/api/v1/music/popular-chart",null),
 
             // static resources
             new RequestInfo(GET, "/docs/**", null),
