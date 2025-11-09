@@ -32,5 +32,5 @@ public class MusicChartResponse {
     private double score;
 
     @Schema(description = "iTunes URL", example = "https://music.apple.com/kr/album/%EA%B7%B8%EB%A6%AC%EC%9B%8C%ED%95%98%EB%8B%A4/1296748148?i=1296748271&uo=4")
-    private String iTunesUrl;
+    private String itunesUrl;
 }
