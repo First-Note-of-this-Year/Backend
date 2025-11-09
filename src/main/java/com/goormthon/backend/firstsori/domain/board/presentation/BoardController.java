@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -97,7 +98,7 @@ public class BoardController implements BoardControllerSpec {
     public ApiResponse<UpdateBoardResponse> updateBoard(
         @RequestPart(value = "nickname", required = false) String nickname,
         @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-        @AuthenticationPrincipal User user
+        @AuthenticationPrincipal PrincipalDetails user
     ) {
         UpdateBoardRequest request = new UpdateBoardRequest(nickname, profileImage);
         UpdateBoardResponse response = boardUseCase.updateBoard(request, user.getUser());
