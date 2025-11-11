@@ -95,7 +95,7 @@ public class BoardController implements BoardControllerSpec {
     // 보드 수정 (닉네임, 프로필 이미지)
     @PatchMapping("/update")
     public ApiResponse<UpdateBoardResponse> updateBoard(
-            @ModelAttribute UpdateBoardRequest request,
+            @RequestBody UpdateBoardRequest request,
             @AuthenticationPrincipal PrincipalDetails user
     ) {
         UpdateBoardResponse response = boardUseCase.updateBoard(request, user.getUser());
