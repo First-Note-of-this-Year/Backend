@@ -13,5 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class UpdateBoardRequest {
 
     private String nickname;
-    private MultipartFile profileImage;
+    private String profileImage;
 }
