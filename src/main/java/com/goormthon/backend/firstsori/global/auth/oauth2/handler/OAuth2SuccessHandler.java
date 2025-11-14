@@ -42,7 +42,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("시큐리티에 저장된 인증 정보 :{}", authentication.getPrincipal().toString());
 
         // 쿠키와 함께 리다이렉트 (프론트 홈 주소)
-        String redirectPath = REDIRECT_PATH + "/login-success"; // 백엔드쪽 콜백-리다이렉트 주소 충돌 없도록 별도 엔드포인트로 분리
+        String redirectPath = REDIRECT_PATH + "/oauth/callback"; // 백엔드쪽 콜백-리다이렉트 주소 충돌 없도록 별도 엔드포인트로 분리
         getRedirectStrategy().sendRedirect(request, response, redirectPath);
     }
 }
