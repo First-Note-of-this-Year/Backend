@@ -43,13 +43,15 @@ public class MessageMapper {
         List<MessageListResponse> content = messages.stream()
                 .map(MessageMapper::toMessageListResponse)
                 .collect(Collectors.toList());
+        int myTotalPages = messages.getTotalElements() <= 10 ? 1 : 1 + (int) Math.ceil((messages.getTotalElements() - 10) / 11.0);
+
 
         return PageResponse.<MessageListResponse>builder()
                 .content(content)
                 .pageNumber(messages.getNumber())
                 .pageSize(messages.getSize())
                 .totalElements(messages.getTotalElements())
-                .totalPages(messages.getTotalPages())
+                .totalPages(myTotalPages)
                 .build();
     }
 
@@ -101,13 +103,14 @@ public class MessageMapper {
         List<BoardPreviewResponse> content = messages.stream()
                 .map(MessageMapper::toBoardPreviewResponse)
                 .collect(Collectors.toList());
+        int myTotalPages = messages.getTotalElements() <= 10 ? 1 : 1 + (int) Math.ceil((messages.getTotalElements() - 10) / 11.0);
 
         return PageResponse.<BoardPreviewResponse>builder()
                 .content(content)
                 .pageNumber(messages.getNumber())
                 .pageSize(messages.getSize())
                 .totalElements(messages.getTotalElements())
-                .totalPages(messages.getTotalPages())
+                .totalPages(myTotalPages)
                 .build();
     }
 
