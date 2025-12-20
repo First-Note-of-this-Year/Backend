@@ -91,10 +91,19 @@ public class RedisCacheUtil {
 
         try {
             // Hash 전체 저장
-            redisTemplate.opsForHash().putAll(key, hashEntries);
+//            redisTemplate.opsForHash().putAll(key, hashEntries);
 
             // Hash 키에 TTL 설정
-            redisTemplate.expire(key, Duration.ofSeconds(timeoutSeconds));
+//            redisTemplate.expire(key, Duration.ofSeconds(timeoutSeconds));
+
+            // 12.20 개선: 저장과 TTL을 원자적으로 처리
+            redisTemplate.opsForValue().set(
+                    key,
+                    objectMapper.writeValueAsString(hashEntries),
+                    Duration.ofSeconds(timeoutSeconds) // TTL 함께 설정
+            );
+
+
         } catch (Exception e) {
             log.error("Redis Hash 캐시 저장 중 오류 발생: key={}", key, e);
         }
