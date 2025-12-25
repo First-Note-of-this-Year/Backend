@@ -30,6 +30,7 @@ public class RequestMatcherHolder {
             new RequestInfo(GET, "/api/v1/oauth2/**", null),
             new RequestInfo(GET, "/oauth2/authorization/**", null),   // Spring Security 기본 엔드포인트
             new RequestInfo(GET, "/login/oauth2/code/**", null),       // callback URL
+            new RequestInfo(POST,"/api/v1/auth/check-login", null),
 
             // 유저 관련
             new RequestInfo(POST, "/api/v1/auth/reissue", null),
