@@ -14,7 +14,7 @@ public class LoginCheckService {
     private final BoardRepository boardRepository;
 
     public LoginCheckResponse checkLogin(PrincipalDetails principal, String shareUri) {
-        if (principal == null) {
+        if (principal == null || principal.getUser() == null) {
             return LoginCheckResponse.invalidToken();
         }
 
