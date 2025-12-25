@@ -1,8 +1,10 @@
 package com.goormthon.backend.firstsori.domain.user.presentation.spec;
 
+import com.goormthon.backend.firstsori.domain.user.application.dto.response.LoginCheckResponse;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
 import com.goormthon.backend.firstsori.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,5 +51,24 @@ public interface AuthControllerSpec {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             HttpServletRequest request,
             HttpServletResponse response);
+
+    @Operation(
+            summary = "로그인 상태 확인 API",
+            description = "쿠키(토큰)와 공유 링크 값을 전달하면, 유저의 로그인 상태와 보드 소유 여부를 반환합니다."
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "정상 응답",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(ref = "#/components/schemas/ApiResponseLoginCheck")
+                    )
+            )
+    })
+    ApiResponse<LoginCheckResponse> checkLogin(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(name = "shareUri", description = "접속하려는 보드의 공유 링크 값") String shareUri
+    );
 
 }
