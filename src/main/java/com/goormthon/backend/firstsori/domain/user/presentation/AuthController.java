@@ -2,10 +2,12 @@ package com.goormthon.backend.firstsori.domain.user.presentation;
 
 import com.goormthon.backend.firstsori.domain.board.application.dto.request.CreateBoardRequest;
 import com.goormthon.backend.firstsori.domain.board.application.usecase.BoardUseCase;
+import com.goormthon.backend.firstsori.domain.user.application.dto.response.LoginCheckResponse;
 import com.goormthon.backend.firstsori.domain.user.application.usecase.UserUseCase;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.User;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Provider;
 import com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Status;
+import com.goormthon.backend.firstsori.domain.user.domain.service.LoginCheckService;
 import com.goormthon.backend.firstsori.domain.user.presentation.spec.AuthControllerSpec;
 import com.goormthon.backend.firstsori.global.auth.jwt.service.JwtTokenUseCase;
 import com.goormthon.backend.firstsori.global.auth.oauth2.domain.PrincipalDetails;
@@ -20,8 +22,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ import static com.goormthon.backend.firstsori.domain.user.domain.entity.enums.Ro
 @RequiredArgsConstructor
 public class AuthController implements AuthControllerSpec {
 
+    private final LoginCheckService loginCheckService;
     private final JwtTokenUseCase tokenService;
     private final UserUseCase userService;
     private final BoardUseCase boardService;
@@ -98,5 +101,16 @@ public class AuthController implements AuthControllerSpec {
                 .build();
 
     }
+
+    // 유저 확인 (유효유저/조회 보드와 유저의 관계 확인)
+    @PostMapping("/check-login")
+    public ApiResponse<LoginCheckResponse> checkLogin(
+            @AuthenticationPrincipal PrincipalDetails user,
+            @RequestParam String shareUri) {
+
+        LoginCheckResponse response = loginCheckService.checkLogin(user, shareUri);
+        return ApiResponse.ok(response);
+    }
+
 
 }
