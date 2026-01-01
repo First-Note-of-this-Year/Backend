@@ -1,15 +1,10 @@
 package com.goormthon.backend.firstsori.domain.music.domain.service;
 
 import com.goormthon.backend.firstsori.domain.music.domain.entity.Music;
-import com.goormthon.backend.firstsori.domain.music.domain.repository.MusicRepository;
-import com.goormthon.backend.firstsori.global.common.exception.ErrorCode;
-import com.goormthon.backend.firstsori.global.common.response.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -18,29 +13,20 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @RequiredArgsConstructor
 public class SaveMusicService {
 
-    private final MusicRepository musicRepository;
+    private final MusicInsertService musicInsertService;
+    private final MusicQueryService musicQueryService;
     private final MusicEventProducer musicEventProducer;
     private final MusicAsyncService musicAsyncService;
 
-    /**
-     * music 저장 전용 트랜잭션
-     * - 중복 시 DB 유니크 제약에 의해 실패
-     * - 실패해도 상위 트랜잭션(message)은 영향받지 않도록 REQUIRES_NEW
-     */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Music saveMusic(Music music) {
         Music targetMusic;
 
         try {
-            targetMusic = musicRepository.saveAndFlush(music);
+            targetMusic = musicInsertService.insert(music);
             log.info("DB에 새로운 음악 저장 완료: 곡='{}'", targetMusic.getSongName());
 
         } catch (DataIntegrityViolationException e) {
-            targetMusic = musicRepository
-                    .findBySongNameAndArtist(music.getSongName(), music.getArtist())
-                    .orElseThrow(() -> new CustomException(ErrorCode.MUSIC_CONSISTENCY_ERROR));
-            ;
-
+            targetMusic = musicQueryService.findExisting(music);
             log.info("이미 존재하는 음악 사용: 곡='{}'", targetMusic.getSongName());
         }
 
@@ -66,5 +52,4 @@ public class SaveMusicService {
                 }
         );
     }
-
 }
