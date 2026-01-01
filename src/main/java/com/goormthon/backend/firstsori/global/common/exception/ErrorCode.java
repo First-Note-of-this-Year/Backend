@@ -67,6 +67,7 @@ public enum ErrorCode {
         // ========================
         // 409 Conflict
         // ========================
+        MUSIC_CONSISTENCY_ERROR(409_001, HttpStatus.CONFLICT, "음악 정보 처리 중 서버 오류가 발생했습니다."),
 
 
         // ========================
