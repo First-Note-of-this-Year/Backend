@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -15,13 +16,18 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class SaveMusicService {
 
     private final MusicRepository musicRepository;
     private final MusicEventProducer musicEventProducer;
     private final MusicAsyncService musicAsyncService;
 
+    /**
+     * music 저장 전용 트랜잭션
+     * - 중복 시 DB 유니크 제약에 의해 실패
+     * - 실패해도 상위 트랜잭션(message)은 영향받지 않도록 REQUIRES_NEW
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Music saveMusic(Music music) {
         Music targetMusic;
 
