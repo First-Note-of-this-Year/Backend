@@ -8,7 +8,15 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "music")
+@Table(
+        name = "music",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_music_song_artist",
+                        columnNames = {"song_name", "artist"}
+                )
+        }
+)
 public class Music {
 
     @Id
