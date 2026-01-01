@@ -26,7 +26,7 @@ public class SaveMusicService {
         Music targetMusic;
 
         try {
-            targetMusic = musicRepository.save(music);
+            targetMusic = musicRepository.saveAndFlush(music);
             log.info("DB에 새로운 음악 저장 완료: 곡='{}'", targetMusic.getSongName());
 
         } catch (DataIntegrityViolationException e) {
