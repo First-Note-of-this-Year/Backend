@@ -32,7 +32,6 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class MessageUseCaseImpl implements MessageUseCase {
 
     private final GetMessageService getMessageService;
@@ -42,6 +41,7 @@ public class MessageUseCaseImpl implements MessageUseCase {
     private final SaveMusicService saveMusicService;
     private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
 
+    @Transactional(readOnly = true)
     @Override
     public MessageResponse getMessage(UUID messageId) {
 
@@ -62,6 +62,7 @@ public class MessageUseCaseImpl implements MessageUseCase {
     }
 
     @Override
+    @Transactional
     public void createMessage(SaveMessageRequest request) {
 
         Board board = getBoardService.getBoardBySharedId(request.shareUri());
