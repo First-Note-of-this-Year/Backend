@@ -41,7 +41,7 @@ public class MessageUseCaseImpl implements MessageUseCase {
     private final SaveMusicService saveMusicService;
     private final RedisTemplate<String, String> redisTemplate; // RedisTemplate 주입
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public MessageResponse getMessage(UUID messageId) {
 
